@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:packageNames="com.example.android.apis,
+                          com.google.android.youtube,
+                          com.whatsapp,
+                          com.android.chrome,
+                          com.facebook.mlite,
+                          org.telegram.messenger,
+                          com.facebook.katana,
+                          com.jio.media.jiobeats,
+                          com.miui.gallery,
+                          com.internshala.app,
+                          com.musixmatch.android.lyrify,
+                          com.google.android.googlequicksearchbox,
+                          com.utorrent.client,
+                          com.phonepe.app,
+                          com.indeed.android.jobsearch,
+                          com.android.providers.telephony,
+                          com.google.android.googlequicksearchbox,
+                          com.android.documentsui"
+    android:accessibilityEventTypes="typeAllMask"
+    android:accessibilityFlags="flagDefault"
+    android:accessibilityFeedbackType="feedbackSpoken"
+    android:notificationTimeout="100"
+    android:canRetrieveWindowContent="true"
+    android:settingsActivity="com.example.android.accessibility.ServiceSettingsActivity"
+    />
