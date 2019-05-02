@@ -16,6 +16,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.abhinay.guardian.database.BlockedAppsInfo;
+import com.abhinay.guardian.database.BlockedAppsInfoHandler;
+
 public class AppRestrictionActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     ImageView appIcon;
@@ -30,10 +33,14 @@ public class AppRestrictionActivity extends AppCompatActivity implements Adapter
     String appNameString;
     String pkgNameString;
 
+    BlockedAppsInfoHandler dbHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_restriction);
+
+        dbHandler = new BlockedAppsInfoHandler(this, null, null, 1);
 
         appIcon = (ImageView) findViewById(R.id.app_icon);
         appName = (TextView) findViewById(R.id.app_name);
@@ -49,17 +56,26 @@ public class AppRestrictionActivity extends AppCompatActivity implements Adapter
         pkgName.setText(pkgNameString);
         //appIcon.setImageDrawable(appNameString);
 
-        SharedPreferences prefs = getSharedPreferences(AppRestrictionActivity.PREFS, MODE_PRIVATE);
-        final String savedPackageNames = prefs.getString(AppRestrictionActivity.PACKAGE_NAMES_KEY, null);
-
+//        SharedPreferences prefs = getSharedPreferences(AppRestrictionActivity.PREFS, MODE_PRIVATE);
+//        final String savedPackageNames = prefs.getString(AppRestrictionActivity.PACKAGE_NAMES_KEY, null);
+//
+//        try{
+//            if(savedPackageNames.contains(pkgNameString)){
+//                appSwitch.setChecked(true);
+//            }else{
+//                appSwitch.setChecked(false);
+//            }
+//        }catch (Exception e){
+//            Log.d("avadakedavara", e.toString()+ " at line 62 in AppRestrictionActivity.java");
+//        }
         try{
-            if(savedPackageNames.contains(pkgNameString)){
+            if(dbHandler.databaseToString().contains(pkgNameString)){
                 appSwitch.setChecked(true);
             }else{
                 appSwitch.setChecked(false);
             }
         }catch (Exception e){
-            Log.d("avadakedavara", e.toString()+ " at line 62 in AppRestrictionActivity.java");
+            appSwitch.setChecked(false);
         }
 
 
@@ -67,13 +83,24 @@ public class AppRestrictionActivity extends AppCompatActivity implements Adapter
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     Log.d("avadakedavara", "true is here");
-                    SharedPreferences prefs = getSharedPreferences(PREFS, 0);
-                    prefs.edit().putString(PACKAGE_NAMES_KEY, savedPackageNames+pkgNameString+" ").apply();
+                    //SharedPreferences prefs = getSharedPreferences(PREFS, 0);
+                    //prefs.edit().putString(PACKAGE_NAMES_KEY, savedPackageNames+pkgNameString+" ").apply();
+
+                    //////////////////////////////////////////////////////////////////////////////////////
+                    BlockedAppsInfo info = new BlockedAppsInfo(pkgNameString, 1);
+                    dbHandler.addApp(info);
+                    //////////////////////////////////////////////////////////////////////////////////////
+
                 }else{
                     Log.d("avadakedavara", "false is here");
-                    SharedPreferences prefs = getSharedPreferences(PREFS, 0);
-                    savedPackageNames.replace(pkgNameString, "");
-                    prefs.edit().putString(PACKAGE_NAMES_KEY, savedPackageNames).apply();
+//                    SharedPreferences prefs = getSharedPreferences(PREFS, 0);
+//                    savedPackageNames.replace(pkgNameString, "");
+//                    prefs.edit().putString(PACKAGE_NAMES_KEY, savedPackageNames).apply();
+
+                    //////////////////////////////////////////////////////////////////////////////////////
+                    dbHandler.deleteApp(pkgNameString);
+                    //////////////////////////////////////////////////////////////////////////////////////
+
                 }
             }
         });

@@ -14,13 +14,20 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.abhinay.guardian.database.BlockedAppsInfoHandler;
+
 public class MyAccessibilityService extends AccessibilityService {
+
+    BlockedAppsInfoHandler handler;
 
     //when service starts
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
         Log.d("avadakedavara", "service started");
+
+        ////////////////
+        handler = new BlockedAppsInfoHandler(this, null, null, 1);
     }
 
     //when service is running
@@ -29,18 +36,28 @@ public class MyAccessibilityService extends AccessibilityService {
         SharedPreferences prefs = getSharedPreferences(AppRestrictionActivity.PREFS, MODE_PRIVATE);
         String savedPackageNames = prefs.getString(AppRestrictionActivity.PACKAGE_NAMES_KEY, null);
         String currentOpenedPackage = (String) event.getPackageName();
-        try {
-            if(savedPackageNames.contains(currentOpenedPackage)){
+//        try {
+//            if(savedPackageNames.contains(currentOpenedPackage)){
+//                Intent intent = new Intent(this, LockActivity.class);
+//                intent.putExtra("abhinay_pkg_name", currentOpenedPackage);
+//                startActivity(intent);
+//                Log.d("avadakedavara", currentOpenedPackage+" started");
+//            }
+//        }catch (Exception e){
+//            Log.d("avadakedavara", e.toString());
+//        }
+
+        try{
+            if(handler.databaseToString().contains(currentOpenedPackage)){
+                Log.d("avadakedavara", "contains");
                 Intent intent = new Intent(this, LockActivity.class);
                 intent.putExtra("abhinay_pkg_name", currentOpenedPackage);
                 startActivity(intent);
                 Log.d("avadakedavara", currentOpenedPackage+" started");
             }
-        }catch (Exception e){
-            Log.d("avadakedavara", e.toString());
+        }catch(Exception e){
+            Log.d("avadakedavara", "not contain");
         }
-
-
 
     }
 
